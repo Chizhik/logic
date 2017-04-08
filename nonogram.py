@@ -14,11 +14,13 @@ for i in range(n):
     for j in range(len(rule)):
         # for each number in rule at least one of its additional variables is True
         conjs.append(' '.join([str(k) for k in range(next_free_idx+j*r_vars, next_free_idx+(j+1)*r_vars)]))
+    # Part 2
+    for j in range(len(rule)):
         # for each number in rule at most one of its additional variables is True
         for k in range(next_free_idx+j*r_vars, next_free_idx+(j+1)*r_vars):
             for l in range(k+1, next_free_idx+(j+1)*r_vars):
                 conjs.append('-'+str(k)+' -'+str(l))
-    # Part 2
+    # Part 3
     for j in range(len(rule)-1):
         offset = next_free_idx+j*r_vars
         # if var[offset+k] is True then var[offset+r_vars+k] or var[offset+r_vars+k+1] or var[offset+r_vars+k+2] or ...
@@ -26,11 +28,12 @@ for i in range(n):
         for k in range(1, r_vars):
             conjs.append('-'+str(offset+k)+' '+' '.join([str(offset+r_vars+l) for l in range(k, r_vars)]))
         # there is no need to do same things backwards because of part 1 (exactly one is true)
-    # Part 3
+    # Part 4
     for j in range(m):
         # In this part we relate cells with our additional variables
         corr = []
         s = 1
+        # following loop can be optimized
         for idx, v in enumerate(rule):
             e = s+v-1
             for k in range(r_vars):
