@@ -6,6 +6,7 @@ m = int(f.readline())
 print(n, m)
 conjs = []
 next_free_idx = n*m + 1
+# n - number of rows
 for i in range(n):
     rule = list(map(int, (f.readline().split())))
     print(rule)
@@ -45,6 +46,7 @@ for i in range(n):
         for x in corr:
             conjs.append(str(i*m+j+1)+' -'+x)
     next_free_idx += r_vars*len(rule)
+# m - number of columns
 for i in range(m):
     rule = list(map(int, (f.readline().split())))
     print(rule)
@@ -98,3 +100,16 @@ for c in conjs:
 mf.close()
 
 subprocess.call(['minisat', 'minisat.in', 'minisat.out'])
+
+rf = open('minisat.out', 'r')
+assert rf.readline() == 'SAT\n'
+solution = rf.readline().split()
+for i in range(n):
+    res = []
+    for j in range(m):
+        if solution[i*m+j][0] == '-':
+            res.append('.')
+        else:
+            res.append('#')
+    print(' '.join(res))
+rf.close()
