@@ -1,3 +1,5 @@
+import subprocess
+
 f = open("nonogram.in", "r")
 n = int(f.readline())
 m = int(f.readline())
@@ -77,10 +79,10 @@ for i in range(m):
                     corr.append(str(next_free_idx+idx*r_vars+k))
             s = e+2
         print(corr)
-        # var[i*n+j] is True if and only if disjunction of corresponding additional variables is True
-        conjs.append('-'+str(i*n+j+1)+' '+' '.join(corr))
+        # var[j*m+i] is True if and only if disjunction of corresponding additional variables is True
+        conjs.append('-'+str(j*m+i+1)+' '+' '.join(corr))
         for x in corr:
-            conjs.append(str(i*n+j+1)+' -'+x)
+            conjs.append(str(j*m+i+1)+' -'+x)
     next_free_idx += r_vars*len(rule)
 print(conjs)
 f.close()
@@ -95,3 +97,4 @@ for c in conjs:
     mf.write(' 0')
 mf.close()
 
+subprocess.call(['minisat', 'minisat.in', 'minisat.out'])
