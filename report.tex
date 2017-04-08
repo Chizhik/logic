@@ -1,0 +1,50 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Coursework 2 Report}
+\author{Alisher Tortay}
+\date{April 2017}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Requirements}
+I used Python 3 for this project. To run nonogram.py \textit{minisat} should be on path.
+
+\section{Conjunctive Normal Form}
+
+\section{Nonogram as SAT}
+
+\textbf{nonogram.py} : Main file.\\
+\textbf{nonogram.in} : Input nonogram in CWD format. No empty line between vertical and horizontal rules.\\
+\textbf{minisat.in} : Input file for \textit{minisat}. Created by \textit{nonogram.py}.\\
+\textbf{minisat.out} : Output of \textit{minisat}.\\
+\textbf{minisat.result} : Statistics of \textit{minisat}.\\
+
+In my implementation I have an atom (literal) for every square. An atom is true if and only if the corresponding square is filled. I also have auxiliary atoms for every number in clue. Suppose we have a following clue: $r_1, r_2, ..., r_t$ where $r_i$ is a number. Suppose $b_i$ is a block of coloured squares corresponding to $r_i$. That implies that $b_i$ consists of $r_i$ squares. Let us compute the number of possible positions of first (leftmost or topmost) square of $b_i$ (according to the clue). The index of leftmost (topmost) possible position for the first square is $\sum_{k=1}^{i-1} r_k + i$ (1) and the index of the rightmost (bottommost) possible position for the first square is $N - \sum_{k=i}^{t} r_k - t + i + 1$ (2) where N is length of row (column). Therefore, we can find the number of possible positions of first square of $b_i$ by subtraction (1) from (2) and adding 1:
+$$c = N - \sum_{k=i}^{t} r_k - t + i + 1 - \sum_{k=1}^{i-1} r_k - i + 1 = N - \sum_{k=1}^{t} r_k - t + 2$$
+Here we can see that for all blocks $b_i$, number of possible positions of first square is the same. For every $b_i$ we set $c$ auxiliary atoms $a_{i,1}, a_{i,2}, ..., a_{i,c}$ in following way: $a_{i,j}$ is true if and only if $b_i$ starts on the $j$th possible position.
+
+Now we are ready to define four correct solution conditions.
+\begin{enumerate}
+    \item For every $r_i$ at least one of its auxiliary atoms is true.\\
+    $\bigwedge_{all clues} \bigwedge_{i=1}^t \bigvee_{j=1}^a a_{i,j}$
+    \item For every $r_i$ at most one of its auxiliary atoms is true.\\
+    $\bigwedge_{all clues} \bigwedge_{i=1}^t \bigwedge_{all pairs} (\neg a_{i, j} \vee \neg a_{l, k})$
+    \item If $a_{i,j}$ then $a_{i+1,j}$ or $a_{i+1,j+1}$ or ... or $a_{i+1,c}$.\\
+    $\bigwedge (a_{i,j} \Rightarrow a_{i+1,j} \vee a_{i+1,j+1} \vee ...) = \bigwedge (\neg a_{i,j} \vee a_{i+1,j} \vee a_{i+1,j+1} \vee ...)$
+    \item A square atom is true if and only if disjunction of corresponding auxiliary atoms is true.
+    $\bigwedge (s_{k,l} \iff a_{i,j} \vee a_{i,j+1} \vee a_{i+1,0} \vee ...) = \bigwedge (\neg s_{k,l} \vee a_{i,j} \vee a_{i,j+1} \vee a_{i+1,0} \vee ...) \wedge (s_{k,l} \vee \neg a_{i,j}) \wedge (s_{k,l} \vee \neg a_{i,j+1}) \wedge ...$
+\end{enumerate}
+
+In condition 3 we do not need to add left implications ($a_{i,j} \Leftarrow a_{i+1,j}$) because combination of right implications and condition 2 make sure that the left implications hold. You can see that every condition is already in cnf form. Thus, we don't need to do any conversions.
+
+In my implementation I did not declare any variables for atoms. Instead I used number (in the form of strings) to represent atoms. 1 to N*M are square atoms and from N*M + 1 I have auxiliary atoms.
+
+nonogram.py prints its output in terminal. The output is completed puzzle ("\#" for filled squares and "." for blank). Neighboring squares are separated by one whitespace. I did not include clues to the output.
+
+I tested my code on puzzles from http://webpbn.com/export.cgi My code successfully solved the biggest puzzle I could find there - 99x99\\ (http://webpbn.com/export.cgi/webpbn017967.cwd). However, before inputting the puzzle, blank line that separates vertical and horizontal clues in the puzzle should be removed.
+
+\end{document}

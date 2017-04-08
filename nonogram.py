@@ -10,17 +10,17 @@ for i in range(n):
     clue = list(map(int, (f.readline().split())))
     # number of additional atoms for each number in clue
     c_atoms = n - sum(clue) - len(clue) + 2
-    # Part 1
+    # Condition 1
     for j in range(len(clue)):
         # for each number in clue at least one of its additional atoms is True
         conjs.append(' '.join([str(k) for k in range(next_free_idx + j * c_atoms, next_free_idx + (j + 1) * c_atoms)]))
-    # Part 2
+    # Condition 2
     for j in range(len(clue)):
         # for each number in clue at most one of its additional atoms is True
         for k in range(next_free_idx+j*c_atoms, next_free_idx+(j+1)*c_atoms):
             for l in range(k+1, next_free_idx+(j+1)*c_atoms):
                 conjs.append('-'+str(k)+' -'+str(l))
-    # Part 3
+    # Condition 3
     for j in range(len(clue)-1):
         offset = next_free_idx+ j * c_atoms
         # if atom[offset+k] is True then atom[offset+c_atoms+k] or atom[offset+c_atoms+k+1] or ...
@@ -28,7 +28,7 @@ for i in range(n):
         for k in range(1, c_atoms):
             conjs.append('-' + str(offset+k) + ' ' + ' '.join([str(offset + c_atoms + l) for l in range(k, c_atoms)]))
         # there is no need to do same things backwards because of part 1 (exactly one is true)
-    # Part 4
+    # Condition 4
     for j in range(m):
         # In this part we relate square atoms with our additional atoms
         corr = []
@@ -50,17 +50,17 @@ for i in range(m):
     clue = list(map(int, (f.readline().split())))
     # number of additional atoms for each number in clue
     c_atoms = m - sum(clue) - len(clue) + 2
-    # Part 1
+    # Condition 1
     for j in range(len(clue)):
         # for each number in clue at least one of its additional atoms is True
         conjs.append(' '.join([str(k) for k in range(next_free_idx + j * c_atoms, next_free_idx + (j + 1) * c_atoms)]))
-    # Part 2
+    # Condition 2
     for j in range(len(clue)):
         # for each number in clue at most one of its additional atoms is True
         for k in range(next_free_idx+j*c_atoms, next_free_idx+(j+1)*c_atoms):
             for l in range(k+1, next_free_idx+(j+1)*c_atoms):
                 conjs.append('-'+str(k)+' -'+str(l))
-    # Part 3
+    # Condition 3
     for j in range(len(clue)-1):
         offset = next_free_idx+ j * c_atoms
         # if atom[offset+k] is True then atom[offset+c_atoms+k] or atom[offset+c_atoms+k+1] or ...
@@ -68,7 +68,7 @@ for i in range(m):
         for k in range(1, c_atoms):
             conjs.append('-' + str(offset+k) +' ' +' '.join([str(offset + c_atoms + l) for l in range(k, c_atoms)]))
         # there is no need to do same things backwards because of part 1 (exactly one is true)
-    # Part 4
+    # Condition 4
     for j in range(n):
         # In this part we relate square atoms with our additional atoms
         corr = []
