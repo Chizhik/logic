@@ -92,5 +92,6 @@ mf.write('p cnf '+str(total_vars)+' '+str(len(conjs)))
 for c in conjs:
     mf.write('\n')
     mf.write(c)
+    mf.write(' 0')
 mf.close()
 
