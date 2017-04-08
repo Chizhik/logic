@@ -90,7 +90,8 @@ for c in conjs:
     mf.write(' 0')
 mf.close()
 
-subprocess.call(['minisat', 'minisat.in', 'minisat.out'])
+with open('minisat.result', 'w') as f:
+    subprocess.call(['minisat', 'minisat.in', 'minisat.out'], stdout=f)
 
 rf = open('minisat.out', 'r')
 assert rf.readline() == 'SAT\n'
