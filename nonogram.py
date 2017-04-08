@@ -83,3 +83,14 @@ for i in range(m):
             conjs.append(str(i*n+j+1)+' -'+x)
     next_free_idx += r_vars*len(rule)
 print(conjs)
+f.close()
+# prepare input for minisat
+mf = open('minisat.in', 'w')
+total_vars = next_free_idx - 1
+print("total vars: ", total_vars)
+mf.write('p cnf '+str(total_vars)+' '+str(len(conjs)))
+for c in conjs:
+    mf.write('\n')
+    mf.write(c)
+mf.close()
+
