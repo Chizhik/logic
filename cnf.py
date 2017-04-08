@@ -1,6 +1,6 @@
 import sys
 
-
+# TODO: handle '='
 class FNode:
     def __init__(self, val):
         self.v = val
