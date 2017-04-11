@@ -28,8 +28,8 @@ def build_tree(f, idx):
     elif f[idx] == '-':    # negation
         root = FNode(f[idx])
         assert len(f) > idx + 1
-        root.l = FNode(f[idx+1])
-        return root, idx + 2
+        root.l, n_idx = build_tree(f, idx+1)
+        return root, n_idx
     else:   # binary op
         root = FNode(f[idx])
         root.l, r_idx = build_tree(f, idx+1)

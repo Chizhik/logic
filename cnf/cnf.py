@@ -19,7 +19,7 @@ class Formula:
     # 2. Remove all implications by changing a > b with -a | b
     # 3. Eliminate all non-literal negations using  De Morgan's Law
     # 4. Finally convert to CNF by recursively distributing (a & b) | c to (a | c) & (b | c)
-    # 5. Convert formula tree into list of lists where each inner list is disjuntion
+    # 5. Convert formula tree into list of lists where each inner list is disjunction
     # 6. Print CNF in Polish Notation
     # 7. Print CNF in infix notation
     # 8. Decide whether CNF is valid
@@ -37,15 +37,15 @@ class Formula:
     def print_cnf(self):
         pr = []
         for c in self.cnf_list:
-            pr.append(' | '.join(c))
-        res = ') & ('.join(pr)
-        if len(self.cnf_list) > 1:
-            print('(%s)' % res)
-        else:
-            print(res)
+            s = ' | '.join(c)
+            if len(c) > 1 and len(self.cnf_list) > 1:
+                s = '('+s+')'
+            pr.append(s)
+        res = ' & '.join(pr)
+        print(res)
 
     # Recursively builds tree from input polish notation. Each node contains either literal or operation.
-    # Each operation node has two childs for two operands. For negation, only left child is used.
+    # Each operation node has two children for two operands. For negation, only left child is used.
     def build_tree(self, idx=0):
         if len(self.polish) <= idx:  # empty
             return None, len(self.polish)
@@ -54,42 +54,50 @@ class Formula:
         elif self.polish[idx] == '-':  # negation
             root = FNode(self.polish[idx])
             assert len(self.polish) > idx + 1
-            root.l = FNode(self.polish[idx + 1])
-            return root, idx + 2
+            root.l, n_idx = self.build_tree(idx + 1)
+            return root, n_idx
         else:  # binary op
             root = FNode(self.polish[idx])
             root.l, r_idx = self.build_tree(idx + 1)
             root.r, n_idx = self.build_tree(r_idx)
             return root, n_idx
 
+    # Prints the tree in polish notation It uses recursive static method to create list form tree.
     def print_polish(self):
         lst = []
         Formula.tree_to_list_polish(self.tree, lst)
         print(" ".join(lst))
 
+    # Checks validity of CNF by inspecting each inner list of CNF list.
+    # For every inner list (disjunction list) it searches for complimentary literals.
     def is_valid(self):
+        print(self.cnf_list)
         for c in self.cnf_list:
-            m = dict()
+            m = set()
             valid = False
             for d in c:
-                if d[0] == '-' and d[2:0] in m:
+                if d[0] == '-' and d[2:] in m:
                     valid = True
                     break
                 elif d[0] != '-' and ('- ' + d) in m:
                     valid = True
                     break
+                else:
+                    m.add(d)
             if not valid:
                 print('Not Valid')
                 return
         print('Valid')
         return
 
+    # checks if argument is an operator
     @staticmethod
     def is_op(x):
         if x in ['&', '|', '>', '<', '=', '-']:
             return True
         return False
 
+    # converts tree into polish list. argument 'lst' should be empty
     @staticmethod
     def tree_to_list_polish(root, lst):
         if root is None:
@@ -99,6 +107,7 @@ class Formula:
         Formula.tree_to_list_polish(root.r, lst)
         return
 
+    # converts tree into polish list. argument 'lst' should be empty
     @staticmethod
     def tree_to_list_infix(root, lst):
         if root is None:
@@ -135,7 +144,6 @@ class Formula:
             print(root.l.v, root.r.v)
             Formula.eq_free(root.l)
             Formula.eq_free(root.r)
-            # TODO: Do we need a copy?
             copy_l = Formula.copy_tree(root.l)
             copy_r = Formula.copy_tree(root.r)
             root.v = '&'
@@ -156,6 +164,7 @@ class Formula:
             Formula.eq_free(root.r)
         return
 
+    # Remove all implications by changing a > b with -a | b
     @staticmethod
     def impl_free(root):
         if root is None or not Formula.is_op(root.v):
@@ -184,6 +193,7 @@ class Formula:
             Formula.impl_free(root.r)
         return
 
+    # Eliminate all non-literal negations using  De Morgan's Law
     @staticmethod
     def nnf(root):
         if root is None or not Formula.is_op(root.v):
@@ -215,6 +225,7 @@ class Formula:
             root.r = Formula.nnf(root.r)
             return root
 
+    # recursively distribute (a & b) | c to (a | c) & (b | c)
     @staticmethod
     def distr(f1, f2):
         if f1.v == '&':
@@ -233,6 +244,7 @@ class Formula:
             new_node.r = f2
             return new_node
 
+    # convert to CNF using distr method
     @staticmethod
     def cnf(root):
         if root is None:
@@ -248,6 +260,8 @@ class Formula:
         else:
             return root
 
+    # Convert formula tree into list of lists where each inner list is disjunction
+    # Input tree is not changed
     @staticmethod
     def cnf_to_list(root, lst, conj=True):
         if root.v is None:
