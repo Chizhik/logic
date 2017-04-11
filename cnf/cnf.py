@@ -71,7 +71,6 @@ class Formula:
     # Checks validity of CNF by inspecting each inner list of CNF list.
     # For every inner list (disjunction list) it searches for complimentary literals.
     def is_valid(self):
-        print(self.cnf_list)
         for c in self.cnf_list:
             m = set()
             valid = False
