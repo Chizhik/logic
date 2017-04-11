@@ -18,7 +18,7 @@ I used Python 3 for this project. To run nonogram.py \textit{minisat} should be 
 
 To run the program use following command:\\
 \\
-\$ python3 cnf.py "$>$ & - p q & p $>$ r q"\\
+\$ python3 cnf.py "$>$ \& - p q \& p $>$ r q"\\
 \\
 It is important to have the formula in double quotes. cnf directory contains only one file: \textit{cnf.py}. This file contains two classes: FNode and Formula. Tree data structure is used to represent formulae. Formula class uses FNode class and contains all the functions required for this assignment.Most of them are declared as static functions.\\
 \textit{to-cnf} is the main function of this class. This method performs following procedures:
@@ -45,6 +45,11 @@ After we convert our formula (tree) into CNF, we convert it into list of lists w
 \textbf{minisat.in} : Input file for \textit{minisat}. Created by \textit{nonogram.py}.\\
 \textbf{minisat.out} : Output of \textit{minisat}.\\
 \textbf{minisat.result} : Statistics of \textit{minisat}.\\
+\\
+To run the program use following command:\\
+\\
+\$ python3 nonogram.py\\
+\\
 
 In my implementation I have an atom (literal) for every square. An atom is true if and only if the corresponding square is filled. I also have auxiliary atoms for every number in clue. Suppose we have a following clue: $r_1, r_2, ..., r_t$ where $r_i$ is a number. Suppose $b_i$ is a block of coloured squares corresponding to $r_i$. That implies that $b_i$ consists of $r_i$ squares. Let us compute the number of possible positions of first (leftmost or topmost) square of $b_i$ (according to the clue). The index of leftmost (topmost) possible position for the first square is $\sum_{k=1}^{i-1} r_k + i$ (1) and the index of the rightmost (bottommost) possible position for the first square is $N - \sum_{k=i}^{t} r_k - t + i + 1$ (2) where N is length of row (column). Therefore, we can find the number of possible positions of first square of $b_i$ by subtraction (1) from (2) and adding 1:
 $$c = N - \sum_{k=i}^{t} r_k - t + i + 1 - \sum_{k=1}^{i-1} r_k - i + 1 = N - \sum_{k=1}^{t} r_k - t + 2$$
