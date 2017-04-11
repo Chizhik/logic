@@ -7,10 +7,9 @@ class FNode:
         self.l = None
         self.r = None
 
-
 polish = sys.argv[1]
 polish = polish.split()
-# print(polish)
+print(polish)
 
 
 def is_op(x):
@@ -64,9 +63,9 @@ def tree_to_list_infix(root, lst):
     return
 
 my_tree, _ = build_tree(polish, 0)
-# test1 = []
-# tree_to_list_infix(my_tree, test1)
-# print(" ".join(test1))
+test1 = []
+tree_to_list_infix(my_tree, test1)
+print(" ".join(test1))
 
 
 def impl_free(root):
@@ -97,9 +96,9 @@ def impl_free(root):
     return
 
 impl_free(my_tree)
-# test2 = []
-# tree_to_list_infix(my_tree, test2)
-# print(" ".join(test2))
+test2 = []
+tree_to_list_infix(my_tree, test2)
+print(" ".join(test2))
 
 
 def nnf(root):
@@ -133,9 +132,9 @@ def nnf(root):
         return root
 
 my_tree = nnf(my_tree)
-# test3 = []
-# tree_to_list_infix(my_tree, test3)
-# print(" ".join(test3))
+test3 = []
+tree_to_list_infix(my_tree, test3)
+print(" ".join(test3))
 
 
 def distr(f1, f2):
@@ -164,6 +163,8 @@ def cnf(root):
         root.r = cnf(root.r)
         return root
     elif root.v == '|':
+        root.l = cnf(root.l)
+        root.r = cnf(root.r)
         return distr(root.l, root.r)
     else:
         return root
@@ -202,7 +203,7 @@ def cnf_to_list(root, lst, conj=True):
 
 test5 = []
 cnf_to_list(my_tree, test5)
-# print(test5)
+print(test5)
 
 
 def print_cnf(lst):
