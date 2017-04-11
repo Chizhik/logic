@@ -108,5 +108,5 @@ for i in range(n):
             res.append('.')
         else:
             res.append('#')
-    print(' '.join(res))
+    print(''.join(res))
 rf.close()
