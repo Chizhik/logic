@@ -1,18 +1,28 @@
 import sys
 
-# TODO: handle '='
+# I use tree data structure to represent formula
 class FNode:
     def __init__(self, val):
         self.v = val
         self.l = None
         self.r = None
 
+# This class contains all the functions. Most of them are declared as static functions
 class Formula:
     def __init__(self, pol_not):
         self.polish = pol_not
         self.tree, _ = self.build_tree(0)
         self.cnf_list = []
 
+    # This method performs following procedures
+    # 1. Remove all equivalence expressions by changing a = b with (a > b) & (b > a)
+    # 2. Remove all implications by changing a > b with -a | b
+    # 3. Eliminate all non-literal negations using  De Morgan's Law
+    # 4. Finally convert to CNF by recursively distributing (a & b) | c to (a | c) & (b | c)
+    # 5. Convert formula tree into list of lists where each inner list is disjuntion
+    # 6. Print CNF in Polish Notation
+    # 7. Print CNF in infix notation
+    # 8. Decide whether CNF is valid
     def to_cnf(self):
         Formula.eq_free(self.tree)
         Formula.impl_free(self.tree)
@@ -23,6 +33,7 @@ class Formula:
         self.print_cnf()
         self.is_valid()
 
+    # Uses CNF list to print cnf in infix notation
     def print_cnf(self):
         pr = []
         for c in self.cnf_list:
@@ -33,6 +44,8 @@ class Formula:
         else:
             print(res)
 
+    # Recursively builds tree from input polish notation. Each node contains either literal or operation.
+    # Each operation node has two childs for two operands. For negation, only left child is used.
     def build_tree(self, idx=0):
         if len(self.polish) <= idx:  # empty
             return None, len(self.polish)
