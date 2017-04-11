@@ -15,6 +15,29 @@ I used Python 3 for this project. To run nonogram.py \textit{minisat} should be 
 
 \section{Conjunctive Normal Form}
 
+
+To run the program use following command:\\
+\\
+\$ python3 cnf.py "$>$ & - p q & p $>$ r q"\\
+\\
+It is important to have the formula in double quotes. cnf directory contains only one file: \textit{cnf.py}. This file contains two classes: FNode and Formula. Tree data structure is used to represent formulae. Formula class uses FNode class and contains all the functions required for this assignment.Most of them are declared as static functions.\\
+\textit{to-cnf} is the main function of this class. This method performs following procedures:
+\begin{enumerate}
+    \item Remove all equivalence expressions by changing $a = b$ with $(a > b) & (b > a)$
+    \item Remove all implications by changing $a > b$ with $-a \vee b$
+    \item Eliminate all non-literal negations using  De Morgan's Law
+    \item Finally convert to CNF by recursively distributing $(a \wedge b) \vee c$ to $(a \vee c) \wedge (b \vee c)$
+    \item Convert formula tree into list of lists where each inner list is disjunction
+    \item Print CNF in Polish Notation
+    \item Print CNF in infix notation
+    \item Decide whether CNF is valid
+\end{enumerate}
+
+
+Before calling this method, we first build formula tree using build-tree method. It recursively builds tree from input polish notation. Each node contains either literal or operation. Each operation node has two children for two operands. For negation, only left child is used.
+
+After we convert our formula (tree) into CNF, we convert it into list of lists where each inner list is disjunction. For example, $(a \vee b) \wedge (p \vee q)$ is converted to [[a, b], [p, q]]. We then use this form to check validity of the CNF. We do it by simply by searching for complimentary literals in every inner list (disjuntion list). We also use this list to print CNF in infix notation. We use  tree structure to print CNF in polish notation.
+
 \section{Nonogram as SAT}
 
 \textbf{nonogram.py} : Main file.\\
